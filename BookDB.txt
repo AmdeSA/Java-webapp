@@ -1,0 +1,52 @@
+<%-- 
+    Document   : testDB
+    Created on : Mar 31, 2019, 2:45:39 PM
+    Author     : amdeselassie
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.sql.*;" %>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <%
+            String Title = request.getParameter("title");
+            int Date = Integer.parseInt(request.getParameter("date"));
+            int Time = Integer.parseInt(request.getParameter("time"));
+            int Ticket = Integer.parseInt(request.getParameter("ticket"));
+            float Total = Ticket * 40;
+            int status = 0;
+            String Name = (String)session.getAttribute("sessionName");
+
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/CinemaDB", "root", "");
+                PreparedStatement st = con.prepareStatement("INSERT INTO Book(UsrName,Title,Date,Time,NoTickets,Price)value(?,?,?,?,?,?)");
+                st.setString(1, Name);
+                st.setString(2, Title);
+                st.setInt(3, Date);
+                st.setInt(4, Time);
+                st.setInt(5, Ticket);
+                st.setFloat(6, Total);
+                
+                
+                //if condition
+                status = st.executeUpdate();
+                con.close();
+                if (status > 0) {
+                    session.setAttribute("sessionMN", Date);
+                    response.sendRedirect("Seat.jsp");
+                } else {
+                    response.sendRedirect("Book.jsp");
+                }
+            } catch (Exception e) {
+                System.out.print(e);
+            }
+        %>
+
+
+    </body>
+</html>
